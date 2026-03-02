@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Portfolio — Your Name</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0e0e0d;
+      --surface: #181817;
+      --gold: #c9a84c;
+      --gold-light: #e8c97a;
+      --text: #e8e4dc;
+      --muted: #888880;
+      --border: #2a2a28;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* NOISE OVERLAY */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.4;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 3rem;
+      background: rgba(14,14,13,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      color: var(--gold);
+      letter-spacing: 0.02em;
+      text-decoration: none;
+    }
+
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--gold-light); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 8rem 3rem 4rem;
+      position: relative;
+    }
+
+    .hero-line {
+      position: absolute;
+      left: 3rem;
+      top: 50%;
+      width: 1px;
+      height: 200px;
+      background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+      transform: translateY(-50%);
+    }
+
+    .hero-content { padding-left: 3rem; max-width: 780px; }
+
+    .hero-eyebrow {
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 0.2s forwards;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3.5rem, 7vw, 7rem);
+      line-height: 1.05;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 0.4s forwards;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--gold-light);
+    }
+
+    .hero-sub {
+      color: var(--muted);
+      font-size: 0.85rem;
+      line-height: 1.8;
+      max-width: 440px;
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 0.6s forwards;
+    }
+
+    .hero-cta {
+      display: inline-block;
+      padding: 0.9rem 2.2rem;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      text-decoration: none;
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      transition: all 0.25s;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 0.8s forwards;
+    }
+    .hero-cta:hover {
+      background: var(--gold);
+      color: var(--bg);
+    }
+
+    .hero-scroll-hint {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--muted);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .hero-scroll-hint::after {
+      content: '';
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--muted), transparent);
+      animation: bounce 1.5s ease infinite;
+    }
+
+    /* SECTION SHARED */
+    section { padding: 7rem 3rem; }
+    .section-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 700;
+      margin-bottom: 3rem;
+    }
+
+    /* ABOUT */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+      max-width: 1100px;
+    }
+
+    .about-img-wrap {
+      position: relative;
+    }
+    .about-img-wrap::before {
+      content: '';
+      position: absolute;
+      inset: -12px -12px 12px 12px;
+      border: 1px solid var(--border);
+      z-index: 0;
+    }
+    .about-img-wrap img {
+      width: 100%;
+      aspect-ratio: 4/5;
+      object-fit: cover;
+      display: block;
+      position: relative;
+      z-index: 1;
+      filter: grayscale(20%);
+    }
+
+    .about-text p {
+      color: var(--muted);
+      font-size: 0.85rem;
+      line-height: 1.9;
+      margin-bottom: 1.2rem;
+    }
+    .about-text p strong { color: var(--text); font-weight: 400; }
+
+    .skills-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 2rem;
+    }
+    .skill-tag {
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.35rem 0.9rem;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    /* WORK */
+    .work { background: var(--surface); }
+
+    .work-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 2px;
+    }
+
+    .work-card {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .work-card img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.6s ease, filter 0.4s ease;
+      filter: grayscale(30%) brightness(0.85);
+    }
+    .work-card:hover img {
+      transform: scale(1.05);
+      filter: grayscale(0%) brightness(1);
+    }
+
+    .work-card-info {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 2rem 1.5rem 1.5rem;
+      background: linear-gradient(to top, rgba(14,14,13,0.95) 0%, transparent 100%);
+      transform: translateY(10px);
+      transition: transform 0.3s ease;
+    }
+    .work-card:hover .work-card-info { transform: translateY(0); }
+
+    .work-card-cat {
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.3rem;
+    }
+    .work-card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+    }
+    .work-card-desc {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 0.4rem;
+    }
+
+    /* CONTACT */
+    .contact-inner {
+      max-width: 640px;
+    }
+    .contact-inner p {
+      color: var(--muted);
+      font-size: 0.85rem;
+      line-height: 1.8;
+      margin-bottom: 2.5rem;
+    }
+    .contact-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.78rem;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.3rem;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .contact-link:hover { color: var(--gold-light); border-color: var(--gold); }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--muted);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes bounce {
+      0%, 100% { transform: scaleY(1); }
+      50%       { transform: scaleY(0.6); }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      section { padding: 5rem 1.5rem; }
+      .hero { padding: 7rem 1.5rem 4rem; }
+      .hero-line { display: none; }
+      .hero-content { padding-left: 0; }
+      .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="#">A. Williams</a>
+    <ul class="nav-links">
+      <li><a href="#work">Work</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-line"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Creative Portfolio — 2024</p>
+      <h1 class="hero-title">Design &amp;<br><em>direction</em></h1>
+      <p class="hero-sub">
+        A multidisciplinary designer crafting digital experiences that sit at the intersection of aesthetics and function. Based in New York City.
+      </p>
+      <a href="#work" class="hero-cta">View Selected Work</a>
+    </div>
+    <div class="hero-scroll-hint">Scroll</div>
+  </section>
+
+  <!-- WORK -->
+  <section class="work" id="work">
+    <p class="section-label">Selected Work</p>
+    <h2 class="section-title">Projects</h2>
+
+    <div class="work-grid">
+
+      <div class="work-card">
+        <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&auto=format&fit=crop" alt="Brand Identity" loading="lazy"/>
+        <div class="work-card-info">
+          <p class="work-card-cat">Branding</p>
+          <h3 class="work-card-title">Ember Studio</h3>
+          <p class="work-card-desc">Full visual identity & brand system</p>
+        </div>
+      </div>
+
+      <div class="work-card">
+        <img src="https://images.unsplash.com/photo-1555774698-0b77e0d5fac6?w=800&auto=format&fit=crop" alt="App Design" loading="lazy"/>
+        <div class="work-card-info">
+          <p class="work-card-cat">UI / UX</p>
+          <h3 class="work-card-title">Cohere App</h3>
+          <p class="work-card-desc">Mobile-first product design</p>
+        </div>
+      </div>
+
+      <div class="work-card">
+        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&auto=format&fit=crop" alt="Photography" loading="lazy"/>
+        <div class="work-card-info">
+          <p class="work-card-cat">Photography</p>
+          <h3 class="work-card-title">Nordvik Series</h3>
+          <p class="work-card-desc">Editorial campaign imagery</p>
+        </div>
+      </div>
+
+      <div class="work-card">
+        <img src="https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=800&auto=format&fit=crop" alt="Web Design" loading="lazy"/>
+        <div class="work-card-info">
+          <p class="work-card-cat">Web Design</p>
+          <h3 class="work-card-title">Harvest Co.</h3>
+          <p class="work-card-desc">E-commerce & web presence</p>
+        </div>
+      </div>
+
+      <div class="work-card">
+        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&auto=format&fit=crop" alt="Print" loading="lazy"/>
+        <div class="work-card-info">
+          <p class="work-card-cat">Print</p>
+          <h3 class="work-card-title">Altitude Magazine</h3>
+          <p class="work-card-desc">Layout design & art direction</p>
+        </div>
+      </div>
+
+      <div class="work-card">
+        <img src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&auto=format&fit=crop" alt="Motion" loading="lazy"/>
+        <div class="work-card-info">
+          <p class="work-card-cat">Motion</p>
+          <h3 class="work-card-title">Kinetic Type</h3>
+          <p class="work-card-desc">Animated typographic systems</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <p class="section-label">About</p>
+    <div class="about-grid">
+      <div class="about-img-wrap">
+        <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=600&auto=format&fit=crop&q=80" alt="Portrait"/>
+      </div>
+      <div class="about-text">
+        <h2 class="section-title" style="margin-bottom:1.5rem">Hello,<br><em style="font-family:'Playfair Display',serif;font-style:italic;color:var(--gold-light)">I'm Alex.</em></h2>
+        <p>With over <strong>8 years of experience</strong> in design and creative direction, I help brands and startups build identities that resonate and endure.</p>
+        <p>My work spans <strong>brand identity, digital products, editorial, and motion</strong> — always grounded in a belief that good design solves real problems beautifully.</p>
+        <p>Previously at Huge Inc. and Pentagram. Currently available for freelance projects worldwide.</p>
+        <div class="skills-list">
+          <span class="skill-tag">Brand Design</span>
+          <span class="skill-tag">UI / UX</span>
+          <span class="skill-tag">Art Direction</span>
+          <span class="skill-tag">Typography</span>
+          <span class="skill-tag">Figma</span>
+          <span class="skill-tag">Motion</span>
+          <span class="skill-tag">Photography</span>
+          <span class="skill-tag">Strategy</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" style="background: var(--surface);">
+    <p class="section-label">Contact</p>
+    <div class="contact-inner">
+      <h2 class="section-title">Let's work<br><em style="font-family:'Playfair Display',serif;font-style:italic;color:var(--gold-light)">together.</em></h2>
+      <p>Open to new projects, collaborations, and the occasional creative adventure. Drop me a line and let's make something worth remembering.</p>
+      <div class="contact-links">
+        <a href="mailto:hello@alexwilliams.com" class="contact-link">
+          <span>✉</span> hello@alexwilliams.com
+        </a>
+        <a href="https://twitter.com" class="contact-link" target="_blank">
+          <span>↗</span> Twitter / X
+        </a>
+        <a href="https://linkedin.com" class="contact-link" target="_blank">
+          <span>↗</span> LinkedIn
+        </a>
+        <a href="https://dribbble.com" class="contact-link" target="_blank">
+          <span>↗</span> Dribbble
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span>© 2024 Alex Williams — All rights reserved</span>
+    <span>Designed with intention</span>
+  </footer>
+
+</body>
+</html>
